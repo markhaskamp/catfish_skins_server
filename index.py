@@ -6,7 +6,17 @@ def score(name, hole, score):
 
 @route('/scores', method='GET')
 def scores():
-  return 'eddie would go'
+  return '''
+{ "players": [
+    { "id": 1,
+      "name": "mark",
+      "scores": [4,4,4]},
+    { "id": 2,
+      "name": "ric",
+      "scores": [4,3,4,3,4,4]}
+    ]
+}
+'''
 
 
 debug(True)
