@@ -12,9 +12,8 @@ def score(id, hole, score):
   conn = sqlite3.connect('data/catfish.db')
   c = conn.cursor()
 
-  t = (id, score)
-  col = 'H'+hole
-  c.execute('INSERT INTO scores(playerId, ' + col + ')  VALUES(?, ?)', t)
+  t = (id, hole, score)
+  c.execute('INSERT INTO scores(playerId, hole, score) VALUES(?, ?, ?)', t)
   conn.commit()
   conn.close()
 
