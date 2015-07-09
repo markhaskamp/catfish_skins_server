@@ -1,26 +1,33 @@
 from bottle import hook, response, route, run, debug
 import json
+import sqlite3
 
 @hook('after_request')
 def enable_cors():
   response.headers['Access-Control-Allow-Origin'] = '*'
 
-@route('/score/<name>/<hole>/<score>', method='GET')
-def score(name, hole, score):
-  print 'name: {}, hole: {}, score: {}'.format(name, hole, score)
+@route('/score/<id>/<hole>/<score>', method='GET')
+def score(id, hole, score):
+  print 'id: {}, hole: {}, score: {}'.format(id, hole, score)
+  conn = sqlite3.connect('data/catfish.db')
+  c = conn.cursor()
+
+  t = (id, score)
+  col = 'H'+hole
+  c.execute('INSERT INTO scores(playerId, ' + col + ')  VALUES(?, ?)', t)
+  conn.commit()
+  conn.close()
 
 @route('/scores', method='GET')
 def scores():
-    return ( {
-"players": [
-    {"id": 1,
-    "name": "mark",
-    "scores": [1,2,3,4]},
-    {"id": 2,
-     "name": "ric",
-     "scores": [5,6,7,8]}
-    ]})
-
+  conn = sqlite3.connect('data/catfish.db')
+  c = conn.cursor()
+  c.execute('''
+  SELECT p.name, s.hole, s.score
+  FROM scores s
+  JOIN players p on p.id = s.playerId
+  ''')
+  return json.dumps(c.fetchall())
 
 
 debug(True)
