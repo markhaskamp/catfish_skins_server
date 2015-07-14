@@ -1,6 +1,6 @@
 from bottle import hook, response, route, run, debug
+from DBI import *
 import json
-import sqlite3
 
 @hook('after_request')
 def enable_cors():
@@ -8,25 +8,14 @@ def enable_cors():
 
 @route('/score/<id>/<hole>/<score>', method='GET')
 def score(id, hole, score):
+  dbi = DBI()
   print 'id: {}, hole: {}, score: {}'.format(id, hole, score)
-  conn = sqlite3.connect('data/catfish.db')
-  c = conn.cursor()
-
-  t = (id, hole, score)
-  c.execute('INSERT INTO scores(playerId, hole, score) VALUES(?, ?, ?)', t)
-  conn.commit()
-  conn.close()
+  dbi.updateScore(id, hole, score)
 
 @route('/scores', method='GET')
 def scores():
-  conn = sqlite3.connect('data/catfish.db')
-  c = conn.cursor()
-  c.execute('''
-  SELECT p.name, s.hole, s.score
-  FROM scores s
-  JOIN players p on p.id = s.playerId
-  ''')
-  return json.dumps(c.fetchall())
+  dbi = DBI()
+  return json.dumps(dbi.getAllScores())
 
 
 debug(True)
