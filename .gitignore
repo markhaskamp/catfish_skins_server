@@ -1,5 +1,6 @@
 *.*~
 *.swp
 .env/
-
 data/catfish.db
+DBI.pyc
+
