@@ -9,7 +9,6 @@ def enable_cors():
 @route('/score/<id>/<hole>/<score>', method='GET')
 def score(id, hole, score):
   dbi = DBI()
-  print 'id: {}, hole: {}, score: {}'.format(id, hole, score)
   dbi.updateScore(id, hole, score)
 
 @route('/scores', method='GET')

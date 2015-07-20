@@ -15,9 +15,24 @@ class DBI:
     conn = sqlite3.connect('data/catfish.db')
     c = conn.cursor()
     c.execute('''
-    SELECT p.name, s.hole, s.score
+    SELECT p.name, s.playerId, s.hole, s.score
     FROM scores s
     JOIN players p on p.id = s.playerId
     ''')
-    return c.fetchall()
+    scores = c.fetchall()
+
+    h = {}
+    for score in scores:
+      if not score[1] in h:
+        h[score[1]] = []
+        h[score[1]].append(score[0])
+
+      h[score[1]].append(score[3])
+
+    print h
+    print
+      
+
+
+    
 
