@@ -18,21 +18,19 @@ class DBI:
     SELECT p.name, s.playerId, s.hole, s.score
     FROM scores s
     JOIN players p on p.id = s.playerId
+    ORDER BY s.playerId, s.score
     ''')
     scores = c.fetchall()
 
     h = {}
     for score in scores:
-      if not score[1] in h:
-        h[score[1]] = []
-        h[score[1]].append(score[0])
+      key = str(score[0])
+      if not key in h:
+        h[key] = []
+        h[key].append(score[1])
 
-      h[score[1]].append(score[3])
+      h[key].append(score[3])
 
     print h
     print
-      
-
-
-    
 
