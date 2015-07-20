@@ -18,7 +18,6 @@ class DBI:
     SELECT p.name, s.playerId, s.hole, s.score
     FROM scores s
     JOIN players p on p.id = s.playerId
-    ORDER BY s.playerId, s.score
     ''')
     scores = c.fetchall()
 
@@ -31,6 +30,5 @@ class DBI:
 
       h[key].append(score[3])
 
-    print h
-    print
+    return h
 

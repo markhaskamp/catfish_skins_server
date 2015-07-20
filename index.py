@@ -14,7 +14,7 @@ def score(id, hole, score):
 @route('/scores', method='GET')
 def scores():
   dbi = DBI()
-  return json.dumps(dbi.getAllScores())
+  return dbi.getAllScores()
 
 
 debug(True)
