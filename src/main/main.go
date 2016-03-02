@@ -22,6 +22,7 @@ func main() {
     fmt.Fprintf(w, string(j))
   })
 
+
   mux.HandleFunc("/score", func(w http.ResponseWriter, req *http.Request) {
     req.ParseForm()
 
@@ -36,6 +37,13 @@ func main() {
     j,_ := json.Marshal(allScores)
     fmt.Fprintf(w, string(j))
   })
+
+
+  mux.HandleFunc("/scores", func(w http.ResponseWriter, req *http.Request) {
+    j,_ := json.Marshal(allScores)
+    fmt.Fprintf(w, string(j))
+  })
+
 
   n := negroni.Classic()
   n.UseHandler(mux)
