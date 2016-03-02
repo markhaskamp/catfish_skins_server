@@ -1,6 +1,7 @@
 package main
 
 import (
+  "data"
   "encoding/json"
   "fmt"
   "net/http"
@@ -8,28 +9,12 @@ import (
   "github.com/codegangsta/negroni"
 )
 
-type ScoreEntry struct {
-  Golfer  string
-  Hole    int
-  Strokes int
-}
-
-type AllScores struct {
-  Scores map[string][]int
-}
-
-
-func NewAllScores() AllScores {
-  s := make(map[string][]int)
-  return AllScores{Scores: s}
-}
-
 
 func main() {
 
   mux := http.NewServeMux()
 
-  allScores := NewAllScores()
+  allScores := data.NewAllScores()
 
 
   mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -44,7 +29,9 @@ func main() {
     strokes,_ := strconv.Atoi(req.FormValue("strokes"))
     golfer    := req.FormValue("golfer")
 
-    allScores.Update(ScoreEntry{Golfer:golfer, Hole:hole, Strokes:strokes})
+    allScores.Update(data.ScoreEntry{Golfer:golfer,
+                                Hole:hole,
+                                Strokes:strokes})
 
     j,_ := json.Marshal(allScores)
     fmt.Fprintf(w, string(j))
@@ -55,12 +42,4 @@ func main() {
   n.Run(":8080")
 }
 
-
-func (as *AllScores)Update(score ScoreEntry) {
-  scores := as.Scores[score.Golfer]
-  if len(scores) == 0 {
-    as.Scores[score.Golfer] = []int{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}    
-  }
-  as.Scores[score.Golfer][score.Hole] = score.Strokes
-}
 
