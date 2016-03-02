@@ -1,7 +1,4 @@
 *.*~
 *.swp
-.env/
-data/catfish.db
-DBI.pyc
-
 bin/
+.DS_Store
