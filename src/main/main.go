@@ -21,19 +21,14 @@ func main() {
 
   mux.HandleFunc("/", handleIndex)
   mux.HandleFunc("/strokes", handleStrokes)
-
-
-
-  mux.HandleFunc("/scores", func(w http.ResponseWriter, req *http.Request) {
-    j,_ := json.Marshal(allScores)
-    fmt.Fprintf(w, string(j))
-  })
+  mux.HandleFunc("/allstrokes", handleAllStrokes)
 
 
   n := negroni.Classic()
   n.UseHandler(mux)
   n.Run(":8080")
 }
+
 
 func handleIndex(w http.ResponseWriter, req *http.Request) {
   j,_ := json.Marshal(allScores)
@@ -49,11 +44,16 @@ func handleStrokes(w http.ResponseWriter, req *http.Request) {
   golfer    := req.FormValue("golfer")
 
   allScores.Update(data.ScoreEntry{Golfer:golfer,
-                              Hole:hole,
-                              Strokes:strokes})
+                                   Hole:hole,
+                                   Strokes:strokes})
 
   j,_ := json.Marshal(allScores)
   fmt.Fprintf(w, string(j))
 }
 
+
+func handleAllStrokes(w http.ResponseWriter, req *http.Request) {
+  j,_ := json.Marshal(allScores)
+  fmt.Fprintf(w, string(j))
+}
 
