@@ -7,25 +7,27 @@ import (
   "net/http"
   "strconv"
   "github.com/codegangsta/negroni"
+  "github.com/gorilla/mux"
 )
 
 var allScores data.AllScores
+var r *mux.Router
 
 
 func main() {
 
-  mux := http.NewServeMux()
 
   allScores = data.NewAllScores()
+  r = mux.NewRouter()
 
 
-  mux.HandleFunc("/", handleIndex)
-  mux.HandleFunc("/strokes", handleStrokes)
-  mux.HandleFunc("/allstrokes", handleAllStrokes)
+  r.HandleFunc("/", handleIndex)
+  r.HandleFunc("/strokes/{golfer}/{hole}/{strokes}", handleStrokes)
+  r.HandleFunc("/allstrokes", handleAllStrokes)
 
 
   n := negroni.Classic()
-  n.UseHandler(mux)
+  n.UseHandler(r)
   n.Run(":8080")
 }
 
@@ -37,15 +39,14 @@ func handleIndex(w http.ResponseWriter, req *http.Request) {
 
 
 func handleStrokes(w http.ResponseWriter, req *http.Request) {
-  req.ParseForm()
+  vars := mux.Vars(req)
 
-  hole,_    := strconv.Atoi(req.FormValue("hole"))
-  strokes,_ := strconv.Atoi(req.FormValue("strokes"))
-  golfer    := req.FormValue("golfer")
+  hole,_    := strconv.Atoi(vars["hole"])
+  strokes,_ := strconv.Atoi(vars["strokes"])
 
-  allScores.Update(data.ScoreEntry{Golfer:golfer,
-                                   Hole:hole,
-                                   Strokes:strokes})
+  allScores.Update(data.ScoreEntry{Golfer:  vars["golfer"],
+                                   Hole:    hole,
+                                   Strokes: strokes})
 
   j,_ := json.Marshal(allScores)
   fmt.Fprintf(w, string(j))
