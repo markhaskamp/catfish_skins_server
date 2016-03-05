@@ -9,18 +9,18 @@ import (
   "github.com/codegangsta/negroni"
 )
 
+var allScores data.AllScores
+
 
 func main() {
 
   mux := http.NewServeMux()
 
-  allScores := data.NewAllScores()
+  allScores = data.NewAllScores()
 
 
-  mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-    j,_ := json.Marshal(allScores)
-    fmt.Fprintf(w, string(j))
-  })
+  mux.HandleFunc("/", handleIndex)
+
 
 
   mux.HandleFunc("/score", func(w http.ResponseWriter, req *http.Request) {
@@ -48,6 +48,11 @@ func main() {
   n := negroni.Classic()
   n.UseHandler(mux)
   n.Run(":8080")
+}
+
+func handleIndex(w http.ResponseWriter, req *http.Request) {
+  j,_ := json.Marshal(allScores)
+  fmt.Fprintf(w, string(j))
 }
 
 
