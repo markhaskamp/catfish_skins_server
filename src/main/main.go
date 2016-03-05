@@ -5,6 +5,7 @@ import (
   "encoding/json"
   "fmt"
   "net/http"
+  "os"
   "strconv"
   "github.com/codegangsta/negroni"
   "github.com/gorilla/mux"
@@ -33,8 +34,13 @@ func main() {
 
 
 func handleIndex(w http.ResponseWriter, req *http.Request) {
-  j,_ := json.Marshal(allScores)
-  fmt.Fprintf(w, string(j))
+  file := fmt.Sprintf("%s/bin/static/index.html", os.Getenv("PWD"))
+  fmt.Println("file: ", file)
+
+  wd,_ := os.Getwd()
+  fmt.Println("Getwd: ", wd) 
+
+  http.ServeFile(w, req, file)
 }
 
 
