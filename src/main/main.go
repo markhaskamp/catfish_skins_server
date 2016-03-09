@@ -5,7 +5,6 @@ import (
   "encoding/json"
   "fmt"
   "net/http"
-  "os"
   "strconv"
   "github.com/codegangsta/negroni"
   "github.com/gorilla/mux"
@@ -17,30 +16,18 @@ var r *mux.Router
 
 func main() {
 
-
   allScores = data.NewAllScores()
   r = mux.NewRouter()
 
 
-  r.HandleFunc("/", handleIndex)
   r.HandleFunc("/strokes/{golfer}/{hole}/{strokes}", handleStrokes)
   r.HandleFunc("/allstrokes", handleAllStrokes)
+  r.HandleFunc("/test", handleTest)
 
 
   n := negroni.Classic()
   n.UseHandler(r)
   n.Run(":8080")
-}
-
-
-func handleIndex(w http.ResponseWriter, req *http.Request) {
-  file := fmt.Sprintf("%s/bin/static/index.html", os.Getenv("PWD"))
-  fmt.Println("file: ", file)
-
-  wd,_ := os.Getwd()
-  fmt.Println("Getwd: ", wd) 
-
-  http.ServeFile(w, req, file)
 }
 
 
@@ -64,3 +51,11 @@ func handleAllStrokes(w http.ResponseWriter, req *http.Request) {
   fmt.Fprintf(w, string(j))
 }
 
+func handleTest(w http.ResponseWriter, req *http.Request) {
+  m := make(map[string]interface{})
+  m["foo"] = "bar"
+  m["n"] = 42
+
+  j,_ := json.Marshal(m)
+  fmt.Fprintf(w, string(j))
+}
