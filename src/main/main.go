@@ -4,6 +4,8 @@ import (
   "data"
   "encoding/json"
   "fmt"
+  "io/ioutil"
+  //"log"
   "net/http"
   "strconv"
   "github.com/codegangsta/negroni"
@@ -20,9 +22,9 @@ func main() {
   r = mux.NewRouter()
 
 
+  r.HandleFunc("/login", handleLogin)
   r.HandleFunc("/strokes/{golfer}/{hole}/{strokes}", handleStrokes)
   r.HandleFunc("/allstrokes", handleAllStrokes)
-  r.HandleFunc("/test", handleTest)
 
 
   n := negroni.Classic()
@@ -30,6 +32,28 @@ func main() {
   n.Run(":8080")
 }
 
+
+type login_struct struct {
+  Name string
+  Pwd string
+}
+
+func handleLogin(w http.ResponseWriter, req *http.Request) {
+  body, err := ioutil.ReadAll(req.Body)
+  if err != nil {
+    panic(fmt.Sprintf("%v", err))
+  }
+
+  var l login_struct
+  err = json.Unmarshal(body, &l)
+  if err != nil {
+    panic(fmt.Sprintf("%v", err))
+  }
+  // log.Println("name: ", l.Name)
+  // log.Println("pwd: ", l.Pwd)
+
+  fmt.Fprintf(w, "wut")
+}
 
 func handleStrokes(w http.ResponseWriter, req *http.Request) {
   vars := mux.Vars(req)
@@ -51,11 +75,3 @@ func handleAllStrokes(w http.ResponseWriter, req *http.Request) {
   fmt.Fprintf(w, string(j))
 }
 
-func handleTest(w http.ResponseWriter, req *http.Request) {
-  m := make(map[string]interface{})
-  m["foo"] = "bar"
-  m["n"] = 42
-
-  j,_ := json.Marshal(m)
-  fmt.Fprintf(w, string(j))
-}
