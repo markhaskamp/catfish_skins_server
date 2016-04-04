@@ -10,6 +10,10 @@ func NewAllScores() AllScores {
   return AllScores{Scores: s}
 }
 
+func ResetAllScores() AllScores {
+  return NewAllScores()
+}
+
 type ScoreEntry struct {
   Golfer  string
   Hole    int

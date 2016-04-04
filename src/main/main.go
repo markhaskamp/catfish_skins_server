@@ -25,6 +25,7 @@ func main() {
   r.HandleFunc("/login", handleLogin)
   r.HandleFunc("/strokes/{golfer}/{hole}/{strokes}", handleStrokes)
   r.HandleFunc("/allstrokes", handleAllStrokes)
+  r.HandleFunc("/reset", handleReset)
 
 
   n := negroni.Classic()
@@ -75,3 +76,7 @@ func handleAllStrokes(w http.ResponseWriter, req *http.Request) {
   fmt.Fprintf(w, string(j))
 }
 
+
+func handleReset(w http.ResponseWriter, req *http.Request) {
+  allScores = data.ResetAllScores()
+}
