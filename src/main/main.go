@@ -53,7 +53,7 @@ func handleLogin(w http.ResponseWriter, req *http.Request) {
   // log.Println("name: ", l.Name)
   // log.Println("pwd: ", l.Pwd)
 
-  fmt.Fprintf(w, "wut")
+  fmt.Fprintf(w, "\nwut\n")
 }
 
 func handleStrokes(w http.ResponseWriter, req *http.Request) {
