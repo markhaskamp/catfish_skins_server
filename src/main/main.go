@@ -2,10 +2,11 @@ package main
 
 import (
   "data"
+  "auth"
   "encoding/json"
   "fmt"
   "io/ioutil"
-  //"log"
+  "log"
   "net/http"
   "strconv"
   "github.com/codegangsta/negroni"
@@ -39,6 +40,7 @@ type login_struct struct {
   Pwd string
 }
 
+
 func handleLogin(w http.ResponseWriter, req *http.Request) {
   body, err := ioutil.ReadAll(req.Body)
   if err != nil {
@@ -50,11 +52,16 @@ func handleLogin(w http.ResponseWriter, req *http.Request) {
   if err != nil {
     panic(fmt.Sprintf("%v", err))
   }
-  // log.Println("name: ", l.Name)
-  // log.Println("pwd: ", l.Pwd)
+  log.Println("name: ", l.Name)
+  log.Println("pwd: ", l.Pwd)
 
-  fmt.Fprintf(w, "\nwut\n")
+  a := auth.NewAuth()
+  loginResponse := a.GetID(l.Name, l.Pwd)
+  j,err := json.Marshal(loginResponse)
+
+  fmt.Fprintf(w, "%v", string(j))
 }
+
 
 func handleStrokes(w http.ResponseWriter, req *http.Request) {
   vars := mux.Vars(req)
