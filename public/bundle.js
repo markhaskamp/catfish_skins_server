@@ -47,7 +47,7 @@
 	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -88,103 +88,120 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	// components: form to enter my scores
-	//             list of all scores
-	//               show one golfers scores
-	// action types: add a score,
-	//               update all scores
-	// store: { allScores: [ {name: 'john', scores: [0,4,3,4,4,...]},
-	//                       {name: 'tony', scores: [0,4,3,4,4,...]} ]
-	//        }
-
-	var initialStore = { allScores: [] };
+	var initialStore = { allScores: { Scores: [] } };
 
 	var store = (0, _redux.createStore)(storeReducer);
 
 	function storeReducer() {
-	  var state = arguments.length <= 0 || arguments[0] === undefined ? initialStore : arguments[0];
-	  var action = arguments[1];
+	    var state = arguments.length <= 0 || arguments[0] === undefined ? initialStore : arguments[0];
+	    var action = arguments[1];
 
 
-	  switch (action.type) {
-	    case 'add-score':
+	    /*
+	    console.log('=== in storeReducer ===');
+	    console.log('action:');
+	    console.log(action)
+	    */
 
-	      var url = '/strokes/' + 'mark' + '/' + action.hole + '/' + action.strokes;
-	      console.log(url);
+	    switch (action.type) {
+	        case 'add-score':
+	            // console.log('add-score -----');
+	            var url = '/strokes/' + action.name + '/' + action.hole + '/' + action.strokes;
+	            console.log("url: " + url);
 
-	      _jquery2.default.ajax({ 'url': url }).done(function (data) {
-	        console.log('.done');
-	        console.log(data);
-	      }).fail(function (f) {
-	        console.log('.fail');
-	        console.log(f);
-	      });
+	            /*
+	            let foo = {"AllStrokes": [
+	                    {"Name": "john", "Scores": [0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+	                    {"Name": "tony", "Scores": [0,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+	                    {"Name": "joe", "Scores":  [0,3,4,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+	                ]
+	            }
+	            */
 
-	      return {
-	        allScores: state.allScores
-	      };
+	            _jquery2.default.ajax({ 'url': url }).done(function (data) {
+	                // console.log(state);
+	                // debugger;
+	                store.dispatch({ type: "renderAllScores", allScores: data });
+	            }).fail(function (f) {
+	                console.log("app.js. reducer. " + f);
+	                return state;
+	            });
+	            // console.log('----- add-score');
+	            return state;
 
-	    default:
-	      return state;
-	  }
+	        case 'renderAllScores':
+	            // debugger;
+	            // console.log('renderAllScores -----');
+	            // console.log(action);
+	            // console.log(action.type);
+	            // console.log(JSON.parse(action.allScores));
+	            // console.log(action.allScores);
+	            // console.log(action.allScores.AllStrokes);
+	            // console.log('----- renderAllScores');
+
+	            return { allScores: JSON.parse(action.allScores) };
+
+	        default:
+	            return state;
+	    }
 	}
 
 	var App = function (_React$Component) {
-	  _inherits(App, _React$Component);
+	    _inherits(App, _React$Component);
 
-	  function App() {
-	    _classCallCheck(this, App);
+	    function App() {
+	        _classCallCheck(this, App);
 
-	    return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
-	  }
-
-	  _createClass(App, [{
-	    key: "render",
-	    value: function render() {
-
-	      var catfishId = getCookie('catfishId');
-	      catfishId = '1234';
-	      console.log("catfishId: " + catfishId);
-
-	      if (catfishId === '') {
-	        return _react2.default.createElement(
-	          "div",
-	          { className: "container" },
-	          _react2.default.createElement(_login2.default, null)
-	        );
-	      } else {
-	        return _react2.default.createElement(
-	          "div",
-	          { className: "container" },
-	          _react2.default.createElement(_myscores2.default, null),
-	          _react2.default.createElement(_allscores2.default, null)
-	        );
-	      }
+	        return _possibleConstructorReturn(this, Object.getPrototypeOf(App).apply(this, arguments));
 	    }
-	  }]);
 
-	  return App;
+	    _createClass(App, [{
+	        key: "render",
+	        value: function render() {
+
+	            var catfishId = getCookie('catfishId');
+	            catfishId = '1234';
+	            // console.log(`catfishId: ${catfishId}`);
+
+	            if (catfishId === '') {
+	                return _react2.default.createElement(
+	                    "div",
+	                    { className: "container" },
+	                    _react2.default.createElement(_login2.default, null)
+	                );
+	            } else {
+	                return _react2.default.createElement(
+	                    "div",
+	                    { className: "container" },
+	                    _react2.default.createElement(_myscores2.default, { store: store }),
+	                    _react2.default.createElement(_allscores2.default, { store: store })
+	                );
+	            }
+	        }
+	    }]);
+
+	    return App;
 	}(_react2.default.Component);
 
 	exports.default = App;
 
 
 	function getCookie(cname) {
-	  var name = cname + "=";
-	  var ca = document.cookie.split(';');
-	  for (var i = 0; i < ca.length; i++) {
-	    var c = ca[i];
-	    while (c.charAt(0) == ' ') {
-	      c = c.substring(1);
-	    }if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-	  }
-	  return "";
+	    var name = cname + "=";
+	    var ca = document.cookie.split(';');
+	    for (var i = 0; i < ca.length; i++) {
+	        var c = ca[i];
+	        while (c.charAt(0) == ' ') {
+	            c = c.substring(1);
+	        }if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+	    }
+	    return "";
 	}
 
 	(0, _reactDom.render)(_react2.default.createElement(
-	  _reactRedux.Provider,
-	  { store: store },
-	  _react2.default.createElement(App, null)
+	    _reactRedux.Provider,
+	    { store: store },
+	    _react2.default.createElement(App, null)
 	), document.getElementById('app'));
 
 /***/ },
@@ -31570,10 +31587,20 @@
 	    value: function handleChangeHoleScore(e) {
 	      var hole = e.target.id;
 	      var selector = '#' + hole;
+	      var strokes = (0, _jquery2.default)(selector).val();
+
+	      if (isNaN(strokes)) {
+	        return;
+	      }
+
+	      if (strokes.length === 0) {
+	        return;
+	      }
 
 	      this.props.dispatch({ type: 'add-score',
+	        "name": (0, _jquery2.default)('#txtName').val(),
 	        "hole": hole,
-	        "strokes": (0, _jquery2.default)(selector).val() });
+	        "strokes": strokes });
 	    }
 	  }, {
 	    key: "render",
@@ -31583,7 +31610,7 @@
 	        { id: "myscores" },
 	        _react2.default.createElement(
 	          "table",
-	          null,
+	          { width: "95%" },
 	          _react2.default.createElement(
 	            "tbody",
 	            null,
@@ -31596,7 +31623,7 @@
 	                _react2.default.createElement(
 	                  "div",
 	                  { className: "nameLabel" },
-	                  "Mark"
+	                  _react2.default.createElement("input", { id: "txtName", placeholder: "name" })
 	                )
 	              ),
 	              _react2.default.createElement(
@@ -31749,7 +31776,7 @@
 
 
 	// module
-	exports.push([module.id, "\n#myscores input {\n  width: 2.5em;\n  text-align: center;\n  border: 1px solid black;\n}\n\n.nameLabel {\n  padding-right: 1.0em;\n}\n\n\n", ""]);
+	exports.push([module.id, "\n#myscores input {\n  width: 95%;\n  height: 2.33em;\n  text-align: center;\n  border: 1px solid black;\n}\n\n.nameLabel {\n  padding-right: 1.0em;\n}\n\n\n", ""]);
 
 	// exports
 
@@ -31794,17 +31821,74 @@
 	    }
 
 	    _createClass(AllScores, [{
+	        key: "componentDidMount",
+	        value: function componentDidMount() {
+	            var _this2 = this;
+
+	            var store = this.props.store;
+
+	            this.unsubscribe = store.subscribe(function () {
+	                return _this2.forceUpdate();
+	            });
+	        }
+	    }, {
+	        key: "componentWillUnmount",
+	        value: function componentWillUnmount() {
+	            this.unsubscribe();
+	        }
+	    }, {
 	        key: "render",
 	        value: function render() {
-	            return _react2.default.createElement(
-	                "div",
-	                { id: "allscores" },
-	                _react2.default.createElement(
-	                    "h3",
-	                    null,
-	                    "allscores"
-	                )
-	            );
+	            // debugger;
+	            // console.log('allscores.render() -----');
+	            var that = this;
+	            var props = this.props;
+	            var store = props.store;
+
+	            var state = store.getState();
+	            // console.log('state');
+	            // console.log(state);
+	            // console.log('----- allsxores.render()');
+
+	            if (state.allScores !== undefined) {
+	                return _react2.default.createElement(
+	                    "div",
+	                    { id: "allscores" },
+	                    _react2.default.createElement("hr", null),
+	                    this.showGolfer(state.allScores.AllStrokes)
+	                );
+	            } else {
+	                return _react2.default.createElement("div", null);
+	            }
+	        }
+	    }, {
+	        key: "showGolfer",
+	        value: function showGolfer(scores) {
+	            if (scores != undefined) {
+	                return scores.map(function (s) {
+	                    return _react2.default.createElement(
+	                        "div",
+	                        { className: "allScoreRow" },
+	                        _react2.default.createElement(
+	                            "div",
+	                            { className: "holeName" },
+	                            s.Name
+	                        ),
+	                        s.Scores.map(function (strokes) {
+	                            return _react2.default.createElement(
+	                                "div",
+	                                { className: "holeStrokes" },
+	                                strokes
+	                            );
+	                        }),
+	                        _react2.default.createElement(
+	                            "div",
+	                            { className: "foo" },
+	                            " "
+	                        )
+	                    );
+	                });
+	            }
 	        }
 	    }]);
 
@@ -31848,7 +31932,7 @@
 
 
 	// module
-	exports.push([module.id, "background-color {\n  color: cyan;\n}\n\n", ""]);
+	exports.push([module.id, "background-color {\n  color: cyan;\n}\n\n\n.holeName {\n    width: 10%;\n    font-size: 1.25em;\n    color: #000066;\n    float: left;\n}\n\n.holeStrokes {\n    width: 3.5%;\n    font-size: 1.5em;\n    color: #006600;\n    text-align: center;\n    padding: 0.25em;\n    float: left;\n}\n\n.foo {\n    clear: left;\n}\n\n", ""]);
 
 	// exports
 

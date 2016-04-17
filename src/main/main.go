@@ -62,6 +62,15 @@ func handleLogin(w http.ResponseWriter, req *http.Request) {
   fmt.Fprintf(w, "%v", string(j))
 }
 
+type Scores struct {
+  AllStrokes []Strokes
+}
+
+type Strokes struct {
+  Name string
+  Scores []int
+}
+
 
 func handleStrokes(w http.ResponseWriter, req *http.Request) {
   vars := mux.Vars(req)
@@ -73,7 +82,13 @@ func handleStrokes(w http.ResponseWriter, req *http.Request) {
                                    Hole:    hole,
                                    Strokes: strokes})
 
-  j,_ := json.Marshal(allScores)
+  scoresArray := make([]Strokes, 0, len(allScores.Scores))
+  for k := range allScores.Scores {
+    scoresArray = append(scoresArray, Strokes{Name: k, Scores: allScores.Scores[k]})
+  }
+
+
+  j,_ := json.Marshal(Scores{scoresArray})
   fmt.Fprintf(w, string(j))
 }
 
