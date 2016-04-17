@@ -89,19 +89,12 @@
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var initialStore = { allScores: { Scores: [] } };
-
 	var store = (0, _redux.createStore)(storeReducer);
 
 	function storeReducer() {
 	    var state = arguments.length <= 0 || arguments[0] === undefined ? initialStore : arguments[0];
 	    var action = arguments[1];
 
-
-	    /*
-	    console.log('=== in storeReducer ===');
-	    console.log('action:');
-	    console.log(action)
-	    */
 
 	    switch (action.type) {
 	        case 'add-score':
@@ -121,6 +114,8 @@
 	            _jquery2.default.ajax({ 'url': url }).done(function (data) {
 	                // console.log(state);
 	                // debugger;
+	                console.log('app. reducer. case-add-score. data');
+	                console.log(data);
 	                store.dispatch({ type: "renderAllScores", allScores: data });
 	            }).fail(function (f) {
 	                console.log("app.js. reducer. " + f);
