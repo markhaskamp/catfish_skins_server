@@ -102,15 +102,6 @@
 	            var url = '/strokes/' + action.name + '/' + action.hole + '/' + action.strokes;
 	            console.log("url: " + url);
 
-	            /*
-	            let foo = {"AllStrokes": [
-	                    {"Name": "john", "Scores": [0,1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
-	                    {"Name": "tony", "Scores": [0,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
-	                    {"Name": "joe", "Scores":  [0,3,4,5,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
-	                ]
-	            }
-	            */
-
 	            _jquery2.default.ajax({ 'url': url }).done(function (data) {
 	                // console.log(state);
 	                // debugger;
@@ -118,8 +109,8 @@
 	                console.log(data);
 	                store.dispatch({ type: "renderAllScores", allScores: data });
 	            }).fail(function (f) {
-	                console.log("app.js. reducer. " + f);
-	                return state;
+	                console.log("error. app.js. reducer. " + f);
+	                store.dispatch({ type: "renderAllScores", allScores: {} });
 	            });
 	            // console.log('----- add-score');
 	            return state;
@@ -134,7 +125,11 @@
 	            // console.log(action.allScores.AllStrokes);
 	            // console.log('----- renderAllScores');
 
-	            return { allScores: JSON.parse(action.allScores) };
+	            var foo = { "AllStrokes": [{ "Name": "john", "Scores": [3, 2, 0, 0, 0, 0, 0, 0, 0] }, { "Name": "tony", "Scores": [2, 3, 4, 0, 0, 0, 0, 0, 0] }, { "Name": "joe", "Scores": [3, 4, 5, 6, 0, 0, 0, 0, 0] }]
+	            };
+
+	            return { allScores: foo };
+	        // return {allScores: JSON.parse(action.allScores)};
 
 	        default:
 	            return state;
@@ -31861,6 +31856,9 @@
 	        value: function showGolfer(scores) {
 	            if (scores != undefined) {
 	                return scores.map(function (s) {
+	                    var total = s.Scores.reduce(function (a, b) {
+	                        return a + b;
+	                    });
 	                    return _react2.default.createElement(
 	                        "div",
 	                        { className: "allScoreRow" },
@@ -31876,6 +31874,11 @@
 	                                strokes
 	                            );
 	                        }),
+	                        _react2.default.createElement(
+	                            "div",
+	                            { className: "total" },
+	                            total
+	                        ),
 	                        _react2.default.createElement(
 	                            "div",
 	                            { className: "foo" },
@@ -31927,7 +31930,7 @@
 
 
 	// module
-	exports.push([module.id, "background-color {\n  color: cyan;\n}\n\n\n.holeName {\n    width: 10%;\n    font-size: 1.25em;\n    color: #000066;\n    float: left;\n}\n\n.holeStrokes {\n    width: 3.5%;\n    font-size: 1.5em;\n    color: #006600;\n    text-align: center;\n    padding: 0.25em;\n    float: left;\n}\n\n.foo {\n    clear: left;\n}\n\n", ""]);
+	exports.push([module.id, "background-color {\n  color: cyan;\n}\n\n\n.holeName {\n    width: 10%;\n    font-size: 2.0em;\n    color: #000066;\n    float: left;\n}\n\n.holeStrokes {\n    width: 6.0%;\n    font-size: 2.0em;\n    color: #006600;\n    text-align: center;\n    padding: 0.25em;\n    float: left;\n}\n\n.total {\n    width: 6.0%;\n    font-size: 2.0em;\n    color: #000066;\n    text-align: center;\n    padding: 0.25em;\n    border: 1px solid black;\n    float: left;\n}\n.foo {\n    clear: left;\n}\n\n", ""]);
 
 	// exports
 
